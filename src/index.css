@@ -111,7 +111,7 @@
 }
 
 @theme {
-  --color-theme-background: #1A1A1A;
+  --color-theme-background: #1a1a1a;
 }
 
 @layer base {
@@ -121,4 +121,25 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #1f1f1f;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #575757;
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }

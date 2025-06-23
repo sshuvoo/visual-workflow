@@ -1,13 +1,20 @@
+import type { INode } from '@/types'
 import {
   ArrowLeftRight,
   Bot,
+  BotMessageSquare,
+  CodeXml,
+  Database,
   Funnel,
+  Mail,
+  MailPlus,
   MessagesSquare,
+  NotebookPen,
   Pencil,
   Plus,
   Search,
 } from 'lucide-react'
-import { Button } from '../ui/button'
+import { Input } from '../ui/input'
 import {
   Sheet,
   SheetContent,
@@ -16,7 +23,6 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '../ui/sheet'
-import { Input } from '../ui/input'
 
 const workflowSteps = [
   {
@@ -36,7 +42,7 @@ const workflowSteps = [
     icon: Pencil,
     title: 'Edit',
     description: 'Modify, Add or Remove item fields',
-    status: 'edit',
+    type: 'edit',
   },
   {
     icon: Funnel,
@@ -51,29 +57,78 @@ const workflowSteps = [
       'Runs the flow when a user send a chat message. For use with AI nodes',
     type: 'ai-agent',
   },
+  {
+    icon: Bot,
+    title: 'Customer Support Agent',
+    description:
+      'Runs the flow when a user send a chat message. For use with AI nodes.',
+    type: 'support-agent',
+  },
+  {
+    icon: Mail,
+    title: 'Send Email',
+    description: 'Send email to a user.',
+    type: 'email',
+  },
+  {
+    icon: Database,
+    title: 'Vector Store',
+    description: 'Store and retrieve data from a vector database.',
+    type: 'database',
+  },
+  {
+    icon: Database,
+    title: 'PgVector',
+    description: 'Answer questions with a vector store.',
+    type: 'postgresql',
+  },
+  {
+    icon: BotMessageSquare,
+    title: 'Ollama Chat Model',
+    description:
+      'Runs the flow when a user send a chat message. For use with AI nodes.',
+    type: 'ollama',
+  },
+  {
+    icon: MailPlus,
+    title: 'Gmail Trigger',
+    description:
+      'Runs the flow when a user send a chat message. For use with AI nodes.',
+    type: 'gmail',
+  },
+  {
+    icon: NotebookPen,
+    title: 'Create Draft',
+    description: 'Creates a draft with specified content and recipients.',
+    type: 'draft',
+  },
+  {
+    icon: CodeXml,
+    title: 'Embed everything',
+    description:
+      'Generates text embeddings from input data for use in search or analysis.',
+    type: 'embed',
+  },
 ]
 
-export function FlowNodeSidebar() {
+interface Props {
+  onAddNode: (newNode: INode) => void
+}
+
+export function FlowNodeSidebar({ onAddNode }: Props) {
   return (
     <Sheet>
       <SheetTrigger>
-        <Button
-          size="lg"
-          variant="outline"
-          className="bg-theme-background absolute top-4 right-4 cursor-pointer rounded-lg border-[#bcbcbc] text-[#bcbcbc]"
-        >
-          <Plus /> Node
-        </Button>
+        <div className="bg-theme-background absolute top-4 right-4 flex size-auto cursor-pointer items-center gap-2 rounded-lg border-2 border-[#bcbcbc] px-3 py-1.5 text-lg text-[#bcbcbc] transition-all duration-300 hover:border-green-500 hover:bg-transparent hover:text-green-500">
+          <Plus className="size-6" /> Node
+        </div>
       </SheetTrigger>
       <SheetContent className="border-[#2f2f2f] bg-[#1f1f1f] text-[#cbcbcb]">
         <SheetHeader className="bg-[#2e2e2e] p-6">
           <SheetTitle className="text-xl text-[#cbcbcb]">
             What happens next?
           </SheetTitle>
-          <SheetDescription className="sr-only">
-            This action cannot be undone. This will permanently delete your
-            account and remove your data from our servers.
-          </SheetDescription>
+          <SheetDescription className="sr-only"></SheetDescription>
         </SheetHeader>
         <div className="px-6 py-2">
           <div className="relative">
@@ -85,35 +140,56 @@ export function FlowNodeSidebar() {
             <Input className="h-11 border-[#5c5c5c] px-10" />
           </div>
         </div>
-        {workflowSteps.map((step, index) => {
-          const IconComponent = step.icon
-          const colors = [
-            'text-orange-500',
-            'text-blue-500',
-            'text-green-500',
-            'text-sky-500',
-            'text-pink-500',
-            'text-cyan-500',
-          ]
-          const iconColor = colors[Math.floor(Math.random() * colors.length)]
-          return (
-            <div key={index} className="text-[#cbcbcb]">
-              <div className="flex items-center gap-4 p-4 transition-colors hover:bg-white/5">
-                <div className="flex min-w-0 flex-1 items-center gap-3">
-                  <div className="p-2 shadow-sm">
-                    <IconComponent className={`size-8 ${iconColor}`} />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <div className="mb-1 flex items-center gap-2">
-                      <h3 className="truncate font-medium">{step.title}</h3>
+        <div className="w-full overflow-y-auto">
+          {workflowSteps.map((step, index) => {
+            const IconComponent = step.icon
+            const colors = [
+              'text-orange-500',
+              'text-blue-500',
+              'text-green-500',
+              'text-sky-500',
+              'text-pink-500',
+              'text-cyan-500',
+            ]
+            const iconColor = colors[index % colors.length]
+            return (
+              <div
+                onClick={() => {
+                  onAddNode({
+                    type: step.type,
+                    id: crypto.randomUUID(),
+                    x: innerWidth / 2,
+                    y: innerHeight / 2,
+                    width: 150,
+                    height: 100,
+                    portId: null,
+                  })
+                }}
+                key={index}
+                className="w-full cursor-pointer text-[#cbcbcb]"
+              >
+                <div className="flex items-center gap-4 p-4 transition-colors hover:bg-white/5">
+                  <div className="flex min-w-0 flex-1 items-center gap-3">
+                    <div className="p-2 shadow-sm">
+                      <IconComponent className={`size-8 ${iconColor}`} />
                     </div>
-                    <p className="truncate text-sm">{step.description}</p>
+                    <div className="min-w-0 flex-1">
+                      <div className="mb-1 flex items-center gap-2">
+                        <h3 className="truncate font-medium text-[#dadada]">
+                          {step.title}
+                        </h3>
+                      </div>
+                      <p className="truncate text-start text-sm">
+                        {step.description}
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          )
-        })}
+            )
+          })}
+          <div className="py-20" />
+        </div>
       </SheetContent>
     </Sheet>
   )
