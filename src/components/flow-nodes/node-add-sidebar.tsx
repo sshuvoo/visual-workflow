@@ -156,7 +156,7 @@ export function FlowNodeSidebar({ onAddNode }: Props) {
               <div
                 onClick={() => {
                   onAddNode({
-                    type: step.type,
+                    type: step.type as 'chat-message',
                     id: crypto.randomUUID(),
                     x: innerWidth / 2,
                     y: innerHeight / 2,
